@@ -1,0 +1,44 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Django ---
+*.sqlite3
+backend/staticfiles/
+backend/media/
+
+# --- Node / Next.js ---
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Playwright ---
+test-results/
+.playwright-mcp/
+playwright-report/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# --- Secrets. Never commit these. ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# --- Editors / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
