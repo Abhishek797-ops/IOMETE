@@ -1,0 +1,32 @@
+# --- Core ---
+Django==6.1.2
+djangorestframework==3.18.3
+django-cors-headers==4.9.0
+django-filter==26.2
+drf-spectacular==0.30.0
+djangorestframework-simplejwt==5.5.1
+
+# --- Database ---
+psycopg[binary]==3.3.6
+pgvector==0.5.1
+
+# --- AI / retrieval ---
+numpy==2.5.4
+google-genai==2.34.0
+
+# --- Infra / config ---
+python-dotenv==1.2.4
+cryptography==50.0.2
+requests==2.34.2
+whitenoise==6.12.0
+gunicorn==26.2.0
+
+# --- Background jobs (optional, enabled via CELERY_ENABLED) ---
+celery==5.6.3
+redis==8.1.0
+
+# --- Dev / test ---
+pytest==9.2.0
+pytest-django==4.14.0
+pytest-cov==7.1.0
+ruff==0.17.3

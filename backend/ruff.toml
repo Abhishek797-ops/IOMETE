@@ -1,0 +1,22 @@
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "*/migrations/*", "staticfiles"]
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "DJ", "RUF"]
+ignore = [
+    "E501",    # line length is enforced by the formatter, not the linter
+    "B008",    # function call in argument default: standard in DRF/Django signatures
+    "RUF012",  # mutable class attrs: Django Meta and DRF fields are conventionally so
+    # Curly quotes, en-dashes and ellipses are deliberate in user-facing strings: this
+    # product's copy is read by prospects and engineers, and typographic punctuation is
+    # part of looking like a finished product rather than a prototype.
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+[lint.per-file-ignores]
+"*/tests/*" = ["E402", "F401"]   # test-local imports inside functions are deliberate
+"conftest.py" = ["E402"]
+"*/settings/*" = ["F403", "F405"]  # star-import of base settings is the Django idiom
