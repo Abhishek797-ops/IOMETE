@@ -1,0 +1,1056 @@
+{
+  "meta": {
+    "schema_version": "1.0.0",
+    "last_verified": "2026-10-31",
+    "verification_method": "Direct fetch of official iomete.com pages listed in `sources`. Each capability, technology and integration below carries the source id(s) it was read from.",
+    "disclaimer": "IOMETE COMPASS is an independent enablement and support-intelligence tool. Product facts below are transcribed from official IOMETE pages. Anything that could not be read from an official page is marked status=\"needs_confirmation\" and must be presented to users as unconfirmed."
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "title": "IOMETE — The sovereign data platform (homepage)",
+      "url": "https://iomete.com/",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S2",
+      "title": "IOMETE Documentation hub",
+      "url": "https://iomete.com/resources",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S3",
+      "title": "What is IOMETE?",
+      "url": "https://iomete.com/resources/getting-started/what-is-iomete",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S4",
+      "title": "IOMETE Architecture",
+      "url": "https://iomete.com/resources/getting-started/architecture",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S5",
+      "title": "Integrations overview",
+      "url": "https://iomete.com/resources/integrations/overview",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S6",
+      "title": "Platform overview",
+      "url": "https://iomete.com/product/data-platform/platform-overview",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S7",
+      "title": "Open source architecture",
+      "url": "https://iomete.com/product/architecture/open-source",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S8",
+      "title": "Deployment architecture",
+      "url": "https://iomete.com/resources/deployment/architecture-deployment",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S9",
+      "title": "Scalability",
+      "url": "https://iomete.com/resources/getting-started/scalability",
+      "fetched_at": "2026-10-31"
+    },
+    {
+      "id": "S10",
+      "title": "Platform tour",
+      "url": "https://iomete.com/resources/getting-started/platform-tour",
+      "fetched_at": "2026-10-31"
+    }
+  ],
+  "positioning": {
+    "tagline": "The sovereign data platform.",
+    "secondary_tagline": "the data platform for the ai era",
+    "one_liner": "A sovereign data lakehouse, self-hosted in your trusted environment.",
+    "official_description": "A Data Lakehouse Platform for AI and Analytics built on Apache Spark, Apache Iceberg, and Kubernetes.",
+    "sources": ["S1", "S3", "S4"],
+    "status": "verified"
+  },
+  "concepts": [
+    {
+      "id": "data-lake",
+      "title": "Data lake",
+      "plain_english": "A very large, cheap storage area where you drop raw files of any shape — logs, CSV exports, images, JSON from APIs — without deciding up front how they will be used.",
+      "analogy": "A warehouse full of unopened boxes. Storing things is cheap and you can put anything in, but finding one specific receipt means opening boxes.",
+      "strength": "Cheap, stores any format, nothing is thrown away.",
+      "weakness": "Hard to query reliably, no guarantees that two people reading at once see consistent data, easy to turn into a swamp nobody trusts.",
+      "status": "industry_concept",
+      "sources": []
+    },
+    {
+      "id": "data-warehouse",
+      "title": "Data warehouse",
+      "plain_english": "A highly organised database built for business questions. Data is cleaned and shaped before it goes in, so queries are fast and trustworthy.",
+      "analogy": "A library with every book catalogued and shelved. Finding things is fast — but only the material a librarian decided to accept is on the shelves.",
+      "strength": "Fast, reliable, well-governed, familiar SQL.",
+      "weakness": "Expensive at scale, rigid, unsuited to raw or semi-structured data and to machine-learning workloads.",
+      "status": "industry_concept",
+      "sources": []
+    },
+    {
+      "id": "data-lakehouse",
+      "title": "Data lakehouse",
+      "plain_english": "One system that keeps the cheap, open storage of a data lake but adds the reliability, structure and SQL performance of a warehouse on top of it.",
+      "analogy": "The same warehouse, but every box is now indexed, labelled and tracked — so you get warehouse-grade answers at lake-grade cost, and nothing has to be copied into a second system.",
+      "strength": "One copy of the data, open formats, supports SQL analytics and AI/ML on the same tables.",
+      "weakness": "A newer architecture; it needs a table format and an engine that implement transactions correctly.",
+      "iomete_note": "IOMETE describes its platform as combining \"the flexibility of data lakes with the performance of data warehouses\".",
+      "status": "industry_concept",
+      "sources": ["S6"]
+    },
+    {
+      "id": "sovereignty",
+      "title": "What \"sovereign\" means here",
+      "plain_english": "The platform runs inside infrastructure you control, so your data never has to leave your organisation's boundary to be analysed.",
+      "analogy": "Instead of shipping your archive to someone else's building and trusting their locks, you install the whole reading room inside your own building.",
+      "official_claims": [
+        "\"The platform operates entirely within your infrastructure\"",
+        "\"no data is sent outside of your organization\""
+      ],
+      "why_it_matters": "Data-residency law, sector regulation, air-gapped networks and internal security policy often make a vendor-hosted SaaS lakehouse impossible to adopt regardless of its features.",
+      "status": "verified",
+      "sources": ["S1", "S3"]
+    }
+  ],
+  "technologies": [
+    {
+      "id": "apache-spark",
+      "name": "Apache Spark",
+      "role": "Distributed processing engine",
+      "plain_english": "The workforce. Spark splits a big job across many machines so that a query over billions of rows finishes in seconds rather than hours.",
+      "iomete_usage": "Every compute cluster in IOMETE runs Spark with a driver pod and zero or more executor pods. Spark also backs Spark Jobs (batch and streaming, Scala or PySpark) and the notebook experience.",
+      "official_quote": "Apache Spark delivers lightning-fast data processing through advanced optimization and in-memory computing.",
+      "status": "verified",
+      "sources": ["S4", "S7", "S3"]
+    },
+    {
+      "id": "apache-iceberg",
+      "name": "Apache Iceberg",
+      "role": "Open table format",
+      "plain_english": "The index and ledger. Iceberg turns a pile of files in object storage into a real table that can be updated safely, queried consistently, and rolled back to how it looked yesterday.",
+      "iomete_usage": "IOMETE exposes an Iceberg REST Catalog Service implementing the Iceberg REST Catalog specification, which also enforces Apache Ranger policies on data access. Event Streams write ingested events directly into Iceberg tables.",
+      "official_quote": "the table format trusted by industry leaders to manage massive-scale data lakes",
+      "documented_properties": [
+        "ACID transaction guarantees",
+        "Time travel and rollback",
+        "Schema and partition evolution",
+        "Concurrent writes"
+      ],
+      "status": "verified",
+      "sources": ["S4", "S7"]
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes",
+      "role": "Orchestration and infrastructure layer",
+      "plain_english": "The building manager. Kubernetes decides which machine each piece of work runs on, restarts anything that crashes, and adds or removes capacity as demand changes.",
+      "iomete_usage": "IOMETE deploys as a Helm chart (`iomete-data-plane-enterprise`) into a Kubernetes cluster, on any cloud or on-premises. Platform services run in a single namespace, with optional multi-namespace support for Spark workloads.",
+      "status": "verified",
+      "sources": ["S3", "S4", "S8"]
+    },
+    {
+      "id": "postgresql",
+      "name": "PostgreSQL",
+      "role": "Platform metadata store",
+      "plain_english": "The platform's own filing cabinet — it stores table definitions, users, permissions and job history. Your analytical data does not live here; it lives in object storage.",
+      "iomete_usage": "All services share a single PostgreSQL server. The init job creates databases with a prefix (default `iomete_`), including the Hive Metastore, Ranger, the Iceberg catalog, Prefect and per-microservice databases.",
+      "status": "verified",
+      "sources": ["S4", "S8"]
+    },
+    {
+      "id": "apache-ranger",
+      "name": "Apache Ranger",
+      "role": "Data authorization policy engine",
+      "plain_english": "The permissions rulebook. Ranger decides who may read which table, which rows and which columns, and what gets masked.",
+      "iomete_usage": "Ranger policies are managed through the Identity Service and enforced at the data layer by the Iceberg REST Catalog Service.",
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "arrow-flight",
+      "name": "Arrow Flight / Arrow Flight SQL",
+      "role": "High-throughput client connectivity",
+      "plain_english": "A fast lane for getting query results out to your laptop or BI tool, designed for moving large result sets efficiently.",
+      "iomete_usage": "Compute clusters can expose Arrow Flight on port 33333 when enabled; gRPC traffic is proxied through the IOMETE Gateway.",
+      "status": "verified",
+      "sources": ["S3", "S4"]
+    },
+    {
+      "id": "spark-connect",
+      "name": "Spark Connect",
+      "role": "Remote Spark sessions",
+      "plain_english": "Lets you write Spark code in your own editor or notebook on your machine while the heavy computation happens on the cluster.",
+      "iomete_usage": "Compute clusters expose Spark Connect on port 15002. IOMETE also runs an internal Spark Connect used for metadata extraction and the database explorer, which is not user-facing.",
+      "official_quote": "Run Spark workloads from local tools using Python, R, or SQL.",
+      "status": "verified",
+      "sources": ["S1", "S3", "S4"]
+    },
+    {
+      "id": "hiveserver2",
+      "name": "HiveServer2 (JDBC/ODBC endpoint)",
+      "role": "SQL endpoint for BI tools",
+      "plain_english": "The standard socket that existing BI and SQL tools already know how to plug into.",
+      "iomete_usage": "Each compute cluster's Spark driver pod exposes HiveServer2 on port 10000.",
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "prefect",
+      "name": "Prefect",
+      "role": "Job orchestration",
+      "plain_english": "The scheduler. It remembers which jobs should run when, and tracks whether each run succeeded.",
+      "iomete_usage": "Prefect Server manages workflow state; a Prefect Worker runs scheduled Spark jobs and is deployed per namespace.",
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "typesense",
+      "name": "Typesense",
+      "role": "Catalog search index",
+      "plain_english": "The search box behind the data catalog, so people can find a table by name or description.",
+      "iomete_usage": "Backs search in the Catalog Service; deployed as a stateful component with a 20Gi persistent volume.",
+      "status": "verified",
+      "sources": ["S4", "S8"]
+    },
+    {
+      "id": "nats",
+      "name": "NATS JetStream",
+      "role": "Cross-pod messaging",
+      "plain_english": "An internal message bus so that different parts of the platform stay in sync in real time.",
+      "iomete_usage": "Used for cross-pod synchronisation of collaborative SQL editing sessions. Optional; deployed with 3 replicas.",
+      "status": "verified",
+      "sources": ["S4", "S8"]
+    },
+    {
+      "id": "nginx-gateway",
+      "name": "IOMETE Gateway (Nginx)",
+      "role": "Single ingress point",
+      "plain_english": "The front door. All traffic — UI, API, notebooks, Spark connections — comes in through one controlled entrance.",
+      "iomete_usage": "An Nginx reverse proxy routing API, UI, Spark Connect, Arrow Flight and WebSocket traffic. It expects an ingress controller in front of it; gRPC routes carry a 24-hour read timeout.",
+      "status": "verified",
+      "sources": ["S4", "S8"]
+    },
+    {
+      "id": "papyrus",
+      "name": "Papyrus (event stream engine)",
+      "role": "Real-time HTTP ingestion",
+      "plain_english": "A small, fast component that accepts events posted over HTTP and lands them in Iceberg tables within moments.",
+      "iomete_usage": "A Rust-based engine handling HTTP POST ingestion into Iceberg tables. Optional and admin-enabled.",
+      "status": "verified",
+      "sources": ["S4", "S10"]
+    },
+    {
+      "id": "file-formats",
+      "name": "Apache Parquet, Avro, ORC",
+      "role": "Open file formats",
+      "plain_english": "The open file shapes your data is physically stored in — readable by many tools, not locked to one vendor.",
+      "iomete_usage": "Listed among the technologies IOMETE works with, alongside JSON, XML and CSV data formats.",
+      "status": "verified",
+      "sources": ["S3"]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "multiple-lakehouses",
+      "name": "Multiple lakehouses / compute clusters",
+      "category": "compute",
+      "description": "Provision independent lakehouses or compute clusters for dev, test and production, or per business unit, region or domain. Each cluster runs its own Spark driver and executors and scales independently.",
+      "business_benefit": "Noisy or experimental workloads cannot slow down production reporting, and costs can be attributed to the team that incurred them.",
+      "limitations": "Administrators must define the node types users may choose from.",
+      "status": "verified",
+      "sources": ["S1", "S4", "S6", "S9"]
+    },
+    {
+      "id": "executor-autoscaling",
+      "name": "Executor auto-scaling",
+      "category": "compute",
+      "description": "Compute clusters use Spark dynamic allocation: a cluster starts with one executor, adds executors up to a configured maximum, and scales back to zero when idle. Single-node mode runs the driver only.",
+      "business_benefit": "You pay for executors only while queries are actually running.",
+      "limitations": "Maximum executor counts and concurrency limits are not published on the scalability page and should be confirmed with IOMETE.",
+      "status": "verified",
+      "sources": ["S9"]
+    },
+    {
+      "id": "sql-editor",
+      "name": "Collaborative SQL editor",
+      "category": "analytics",
+      "description": "A browser-based SQL workspace with auto-completion, query history, visual explain plans, worksheets and version control. Multiple users can edit the same query simultaneously.",
+      "business_benefit": "Analysts are productive without installing anything, and query work becomes reviewable rather than trapped on individual laptops.",
+      "limitations": "Real-time collaborative editing is handled by a Collaboration Service using CRDT-based conflict resolution and is optional / feature-flagged. The `iom-sql` service is fixed at one replica and is not horizontally autoscalable.",
+      "status": "verified",
+      "sources": ["S1", "S3", "S4", "S9", "S10"]
+    },
+    {
+      "id": "query-monitoring",
+      "name": "Query monitoring and history",
+      "category": "analytics",
+      "description": "Lists active queries across all compute clusters and retains runtime statistics, execution plans and performance metrics for completed queries.",
+      "business_benefit": "Long-running or stuck queries are spotted early instead of being discovered by a complaining stakeholder.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S10"]
+    },
+    {
+      "id": "spark-jobs",
+      "name": "Spark jobs, streaming jobs and job templates",
+      "category": "engineering",
+      "description": "Deploy, schedule, monitor and recover Spark workloads — batch or Structured Streaming, in Scala or PySpark — with reusable job templates and built-in orchestration backed by Prefect.",
+      "business_benefit": "Data pipelines are operated inside the platform instead of requiring a separate orchestration stack.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S4", "S6", "S10"]
+    },
+    {
+      "id": "jupyter-containers",
+      "name": "Jupyter containers / ML notebooks",
+      "category": "data-science",
+      "description": "Containerised JupyterLab environments running as separate pods inside the platform, reached through the Gateway with WebSocket support. Python, R and Scala are supported.",
+      "business_benefit": "Data scientists work next to the data under the same access controls, rather than extracting it to a laptop.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S4", "S6", "S10"]
+    },
+    {
+      "id": "event-streams",
+      "name": "Event streams (real-time ingestion)",
+      "category": "ingestion",
+      "description": "Ingest events over HTTP POST and write them to Apache Iceberg tables in near real time, via the Rust-based Papyrus engine.",
+      "business_benefit": "Operational events become queryable alongside historical data without standing up a separate streaming platform.",
+      "limitations": "Optional and must be enabled by an administrator.",
+      "status": "verified",
+      "sources": ["S3", "S4", "S10"]
+    },
+    {
+      "id": "streaming-sources",
+      "name": "Streaming source support",
+      "category": "ingestion",
+      "description": "IOMETE's homepage names Apache Kafka, Apache Pulsar and Amazon Kinesis among the technologies it works with for real-time streaming.",
+      "business_benefit": "Existing streaming infrastructure can feed the lakehouse.",
+      "limitations": "The homepage names these technologies but the integrations overview page does not document a dedicated ingestion-connector category for them. Confirm the exact connection pattern (for example, Spark Structured Streaming jobs versus a managed connector) with IOMETE.",
+      "status": "needs_confirmation",
+      "sources": ["S1", "S5"]
+    },
+    {
+      "id": "query-federation",
+      "name": "Query federation engine",
+      "category": "analytics",
+      "description": "Query data from multiple sources without building complex ETL pipelines first.",
+      "business_benefit": "Answers can be produced before a full migration is complete.",
+      "limitations": "The specific federated source types and any pushdown behaviour are not enumerated on the pages reviewed. Confirm the supported source list with IOMETE.",
+      "status": "needs_confirmation",
+      "sources": ["S3"]
+    },
+    {
+      "id": "data-catalog",
+      "name": "Data catalog",
+      "category": "governance",
+      "description": "A central place for dataset metadata, discovery and lineage, organised across tabs in the Governance section and searchable via Typesense. Includes table metadata, classification tags and access permissions.",
+      "business_benefit": "People can find and trust a dataset without asking a data engineer first.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S3", "S4", "S6", "S10"]
+    },
+    {
+      "id": "access-control",
+      "name": "Central data access control",
+      "category": "governance",
+      "description": "Access policies spanning all datasets, enforced at the data layer by Apache Ranger through the Iceberg REST Catalog. The homepage documents control at table, row, column, user, group, team and department level, plus tag-based access policies and data masking with fictional values.",
+      "business_benefit": "One place to prove who can see what — which is what an auditor actually asks for.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S3", "S4", "S6"]
+    },
+    {
+      "id": "three-level-authorization",
+      "name": "Three-level authorization model",
+      "category": "security",
+      "description": "Authorization is applied at three levels: platform (Core Service), data (Apache Ranger via the Iceberg REST Catalog) and resource (RAS, with VIEW, UPDATE and MANAGE permissions).",
+      "business_benefit": "Platform administration, data access and resource ownership are separable concerns rather than one coarse admin flag.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "enterprise-auth",
+      "name": "Enterprise authentication (LDAP, SAML, OIDC)",
+      "category": "security",
+      "description": "Built-in username/password authentication plus LDAP and single sign-on via SAML or OIDC, handled by the Identity Service.",
+      "business_benefit": "Access follows your existing joiner/leaver process instead of a separate user list.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "domains",
+      "name": "Domains / multi-domain support",
+      "category": "governance",
+      "description": "Separate teams, projects or environments into domains with their own resources, members and roles, organising data by subject area to support discovery, access control and compliance.",
+      "business_benefit": "Supports a data-mesh operating model where domain teams own their own data products.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S3"]
+    },
+    {
+      "id": "resource-bundles",
+      "name": "Resource bundles",
+      "category": "governance",
+      "description": "Group platform resources and assign permissions per bundle.",
+      "business_benefit": "Permissions are granted to a meaningful set of resources rather than item by item.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S10"]
+    },
+    {
+      "id": "iceberg-rest-catalog",
+      "name": "Iceberg REST Catalog",
+      "category": "interoperability",
+      "description": "A service implementing the Iceberg REST Catalog specification, which also enforces Ranger policies on data access.",
+      "business_benefit": "Other Iceberg-compatible engines can read the same tables under the same access policies — your data is not locked inside one engine.",
+      "limitations": "Which third-party engines are formally supported and tested is not enumerated on the pages reviewed; confirm with IOMETE.",
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "bi-connectivity",
+      "name": "BI connectivity",
+      "category": "interoperability",
+      "description": "Connect BI tools through a SQL endpoint. Compute clusters expose HiveServer2 (JDBC/ODBC) and, when enabled, Arrow Flight. Documented BI integrations include Power BI, Tableau, Metabase, Apache Superset and Redash.",
+      "business_benefit": "Dashboards your business already uses keep working, pointed at the lakehouse.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S1", "S3", "S4", "S5"]
+    },
+    {
+      "id": "git-integration",
+      "name": "Git integration",
+      "category": "engineering",
+      "description": "Version control for SQL worksheets and queries.",
+      "business_benefit": "Analytical logic gets the same review and history as application code.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S3", "S5"]
+    },
+    {
+      "id": "deploy-anywhere",
+      "name": "Deploy anywhere (on-prem, private cloud, public cloud, hybrid)",
+      "category": "deployment",
+      "description": "Deployed as a Helm chart into Kubernetes on-premises, in private clouds or in public clouds (AWS, Azure, Google Cloud). IOMETE describes its model as \"Hybrid first\".",
+      "business_benefit": "The platform follows your data-residency and infrastructure constraints instead of dictating them.",
+      "limitations": "Cloud-specific details differ: scratch directories are `/local1` on-prem and on AWS, `/mnt` on Azure, `/mnt/stateful_partition` on GCP; only AWS has zone-aware scheduling.",
+      "status": "verified",
+      "sources": ["S1", "S3", "S6", "S8"]
+    },
+    {
+      "id": "multi-region",
+      "name": "Multi-region support (Enterprise Edition)",
+      "category": "deployment",
+      "description": "One control plane can manage multiple data planes. IOMETE documents three multi-cluster patterns: a single installation; multiple fully independent installations; and a shared global database where instances share users, catalogs and domains while compute stays independent.",
+      "business_benefit": "Regional data residency without running three disconnected platforms.",
+      "limitations": "Described as an Enterprise Edition capability. Region-specific limits are not published.",
+      "status": "verified",
+      "sources": ["S3", "S9"]
+    },
+    {
+      "id": "workload-isolation",
+      "name": "Workload isolation and quotas",
+      "category": "operations",
+      "description": "Node placement via `controlPlaneNodeSelector`/`controlPlaneTolerations` for platform services and `dataPlaneNodeSelector`/`dataPlaneTolerations` for Spark drivers and executors; per-team namespaces with separate CPU and memory quotas; and priority classes `iomete-compute`, `iomete-spark-job`, `iomete-notebook` and `iomete-operational-support`.",
+      "business_benefit": "A runaway job is contained by the platform rather than by an incident call.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S9"]
+    },
+    {
+      "id": "health-checks",
+      "name": "Health check service",
+      "category": "operations",
+      "description": "A Health Check Service that checks every 10 seconds and retains 48 hours of history, with status relayed over WebSocket by the Socket Service.",
+      "business_benefit": "Platform state is observable in the product rather than only in cluster tooling.",
+      "limitations": null,
+      "status": "verified",
+      "sources": ["S4"]
+    },
+    {
+      "id": "cost-levers",
+      "name": "Documented cost levers",
+      "category": "commercial",
+      "description": "IOMETE documents four cost levers: spot or preemptible instances for executors (\"up to 3x cost reduction\"), reserved instances or savings plans for always-on drivers and platform services, right-sizing via node types, and executor auto-scaling.",
+      "business_benefit": "Compute spend has explicit, documented dials rather than being a fixed vendor bill.",
+      "limitations": "IOMETE's marketing pages claim 2-5x (homepage) and 2-3x (platform overview) savings versus SaaS alternatives. These are vendor claims, not independently verified, and the two figures differ. COMPASS must present them as vendor claims and never as a guarantee or as a modelled saving for a specific customer.",
+      "status": "vendor_claim",
+      "sources": ["S1", "S6", "S9"]
+    },
+    {
+      "id": "fde-services",
+      "name": "Forward-deployed engineers (FDEs)",
+      "category": "commercial",
+      "description": "IOMETE's homepage describes forward-deployed engineers as \"Services that extend customer teams.\"",
+      "business_benefit": "Implementation expertise is available during adoption rather than only documentation.",
+      "limitations": "Scope, availability and commercial terms of FDE engagement are not published; confirm with IOMETE.",
+      "status": "verified",
+      "sources": ["S1"]
+    },
+    {
+      "id": "compliance",
+      "name": "Compliance posture",
+      "category": "security",
+      "description": "IOMETE's homepage states SOC 2 Certified, HIPAA Compliant and GDPR Compliant, and links a Vanta-hosted trust center.",
+      "business_benefit": "Shortens security review by pointing at existing attestations.",
+      "limitations": "These are statements made on IOMETE's own homepage. COMPASS presents them as published vendor claims and directs prospects to IOMETE's trust center for current attestation documents rather than asserting them as independently verified. Always request the current report during procurement.",
+      "status": "vendor_claim",
+      "sources": ["S1"]
+    }
+  ],
+  "architecture": {
+    "summary": "IOMETE deploys as a Helm chart into a Kubernetes cluster and is organised in three tiers: infrastructure, platform services, and workloads. Compute and storage are decoupled; all table data lives in object storage.",
+    "sources": ["S4", "S8"],
+    "status": "verified",
+    "tiers": [
+      {
+        "id": "infrastructure",
+        "name": "Infrastructure",
+        "description": "Kubernetes and object storage.",
+        "components": ["kubernetes", "object-storage", "postgresql"]
+      },
+      {
+        "id": "platform-services",
+        "name": "Platform services",
+        "description": "Metadata, security, catalog, SQL and orchestration services, running in a single namespace.",
+        "components": [
+          "iom-gateway",
+          "core-service",
+          "cluster-service",
+          "identity-service",
+          "sql-service",
+          "catalog-service",
+          "iceberg-rest-catalog",
+          "health-check-service",
+          "socket-service",
+          "collaboration-service",
+          "prefect"
+        ]
+      },
+      {
+        "id": "workloads",
+        "name": "Workloads",
+        "description": "Spark-based compute created on demand, with optional multi-namespace support.",
+        "components": ["compute-clusters", "spark-jobs", "jupyter-containers", "event-streams", "spark-history"]
+      }
+    ],
+    "services": [
+      {
+        "id": "iom-gateway",
+        "name": "IOMETE Gateway",
+        "tier": "platform-services",
+        "what_it_does": "An Nginx reverse proxy that routes API, UI, Spark Connect, Arrow Flight and WebSocket traffic.",
+        "why_needed": "Gives the platform a single, controllable entry point so network policy and TLS are enforced in one place.",
+        "customer_gain": "One hostname and one ingress rule to manage and audit.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "core-service",
+        "name": "Core Service",
+        "tier": "platform-services",
+        "what_it_does": "Platform settings, authentication tokens, authorization checks, Spark settings, S3 browser, Spark History proxy and integrations.",
+        "why_needed": "Holds platform-level configuration and the platform authorization decision point.",
+        "customer_gain": "Platform administration is centralised rather than scattered across components.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "cluster-service",
+        "name": "Cluster Service",
+        "tier": "platform-services",
+        "what_it_does": "Manages compute clusters, Spark jobs, Jupyter containers, Docker registries, secrets and event stream definitions.",
+        "why_needed": "Translates user intent (\"give me a cluster\") into Kubernetes workloads.",
+        "customer_gain": "Self-service compute without handing users kubectl access.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "identity-service",
+        "name": "Identity Service",
+        "tier": "platform-services",
+        "what_it_does": "Users, groups, roles, LDAP/SAML/OIDC and Apache Ranger policies.",
+        "why_needed": "Single place where identity and data-access policy are defined.",
+        "customer_gain": "Reuse corporate identity; prove access control to auditors.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "sql-service",
+        "name": "SQL Service",
+        "tier": "platform-services",
+        "what_it_does": "Query execution, worksheets, Git integration, query history and dashboards.",
+        "why_needed": "Drives the SQL workspace and keeps a durable record of analytical work.",
+        "customer_gain": "Analysts get a full SQL IDE in the browser with history and version control.",
+        "note": "Fixed at 1 replica; not horizontally autoscalable.",
+        "sources": ["S4", "S9"]
+      },
+      {
+        "id": "catalog-service",
+        "name": "Catalog Service",
+        "tier": "platform-services",
+        "what_it_does": "Search (backed by Typesense), table metadata, classification tags and access permissions.",
+        "why_needed": "Makes the lakehouse discoverable and classifiable.",
+        "customer_gain": "People find the right table instead of recreating it.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "iceberg-rest-catalog",
+        "name": "Iceberg REST Catalog Service",
+        "tier": "platform-services",
+        "what_it_does": "Implements the Iceberg REST Catalog specification and enforces Ranger policies on data access.",
+        "why_needed": "It is the governed doorway to the tables — both for IOMETE's own engine and for external Iceberg-compatible engines.",
+        "customer_gain": "Open interoperability without bypassing access control.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "health-check-service",
+        "name": "Health Check Service",
+        "tier": "platform-services",
+        "what_it_does": "Runs checks every 10 seconds and retains 48 hours of history.",
+        "why_needed": "Gives operators in-product visibility of platform health.",
+        "customer_gain": "Faster triage; less guessing during an incident.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "socket-service",
+        "name": "Socket Service",
+        "tier": "platform-services",
+        "what_it_does": "A WebSocket relay for health and job status updates.",
+        "why_needed": "Pushes live state to the UI without polling.",
+        "customer_gain": "The console reflects reality immediately.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "collaboration-service",
+        "name": "Collaboration Service",
+        "tier": "platform-services",
+        "what_it_does": "Real-time SQL editing with CRDT-based conflict resolution. Optional and feature-flagged; uses NATS JetStream for cross-pod sync.",
+        "why_needed": "Allows two analysts to work in one worksheet safely.",
+        "customer_gain": "Pair-debugging a query instead of emailing SQL around.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "prefect",
+        "name": "Prefect Server and Worker",
+        "tier": "platform-services",
+        "what_it_does": "Prefect Server manages workflow state; Prefect Worker runs scheduled Spark jobs and is deployed per namespace.",
+        "why_needed": "Scheduling and run-state tracking for data pipelines.",
+        "customer_gain": "Pipelines are scheduled and observable inside the platform.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "spark-operator",
+        "name": "Spark Operator",
+        "tier": "workloads",
+        "what_it_does": "Controller, Webhook and Submit Service that turn Spark workload definitions into running pods.",
+        "why_needed": "Kubernetes does not natively understand Spark applications.",
+        "customer_gain": "Spark becomes a first-class, managed workload type.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "compute-clusters",
+        "name": "Compute Clusters",
+        "tier": "workloads",
+        "what_it_does": "Each cluster runs a Spark driver pod exposing HiveServer2 (port 10000), Spark Connect (port 15002) and Arrow Flight (port 33333, when enabled), with zero or more executors.",
+        "why_needed": "This is where queries and notebooks actually execute.",
+        "customer_gain": "Independent, right-sized, auto-scaling compute per workload.",
+        "sources": ["S4", "S9"]
+      },
+      {
+        "id": "spark-jobs",
+        "name": "Spark Jobs",
+        "tier": "workloads",
+        "what_it_does": "Batch and streaming jobs in Scala or PySpark, scheduled by the Job Orchestrator.",
+        "why_needed": "Production data pipelines need to run unattended and on a schedule.",
+        "customer_gain": "ETL and streaming run on the same platform as analytics.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "jupyter-containers",
+        "name": "Jupyter Containers",
+        "tier": "workloads",
+        "what_it_does": "Separate JupyterLab pods reached through the Gateway with WebSocket support.",
+        "why_needed": "Data science needs an interactive environment next to the data.",
+        "customer_gain": "Notebooks under platform access control, not on laptops.",
+        "sources": ["S4", "S10"]
+      },
+      {
+        "id": "event-streams",
+        "name": "Event Streams (Papyrus)",
+        "tier": "workloads",
+        "what_it_does": "HTTP POST ingestion into Iceberg tables via a Rust-based engine. Optional, admin-enabled.",
+        "why_needed": "Near-real-time ingestion without a separate streaming stack.",
+        "customer_gain": "Operational events queryable within moments of arriving.",
+        "sources": ["S4", "S10"]
+      },
+      {
+        "id": "spark-history",
+        "name": "Spark History Server",
+        "tier": "workloads",
+        "what_it_does": "Reads Spark event logs from object storage; accessed via the Core Service proxy.",
+        "why_needed": "Post-mortem analysis of completed Spark applications.",
+        "customer_gain": "Diagnose a slow or failed job after the fact.",
+        "sources": ["S4"]
+      },
+      {
+        "id": "object-storage",
+        "name": "Object storage",
+        "tier": "infrastructure",
+        "what_it_does": "Holds all table data, Spark event logs and SQL results under the key paths `data/`, `iomete-assets/spark-history/` and `iomete-assets/sql-results/`.",
+        "why_needed": "Decoupling storage from compute is what makes a lakehouse cheap and elastic.",
+        "customer_gain": "One copy of the data, in your own bucket, readable by many engines.",
+        "sources": ["S4", "S8"]
+      },
+      {
+        "id": "postgresql",
+        "name": "PostgreSQL (platform metadata)",
+        "tier": "infrastructure",
+        "what_it_does": "A single shared PostgreSQL server holding separate databases for the Hive Metastore, Ranger, the Iceberg catalog, Prefect and each microservice.",
+        "why_needed": "Platform state must be transactional and durable.",
+        "customer_gain": "A familiar database to back up and operate — and your analytical data is not in it.",
+        "sources": ["S4", "S8"]
+      },
+      {
+        "id": "kubernetes",
+        "name": "Kubernetes",
+        "tier": "infrastructure",
+        "what_it_does": "Runs every platform service and every Spark pod; provides scheduling, restart and scaling.",
+        "why_needed": "It is the substrate IOMETE is built to deploy onto, on any cloud or on-premises.",
+        "customer_gain": "Deploy into infrastructure you already operate and control.",
+        "sources": ["S3", "S4", "S8"]
+      }
+    ]
+  },
+  "storage_backends": [
+    { "name": "AWS S3", "scheme": "s3a://", "config_type": "aws_s3", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "S3-compatible object storage", "scheme": "s3a://", "config_type": "s3_compatible", "note": "Requires endpoint, accessKey and secretKey.", "status": "verified", "sources": ["S4", "S8"] },
+    { "name": "Apache Ozone", "scheme": "s3a://", "config_type": "s3_compatible", "status": "verified", "sources": ["S3", "S4"] },
+    { "name": "MinIO", "scheme": "s3a://", "config_type": "s3_compatible", "note": "The dedicated `minio` config type is deprecated; use `s3_compatible`.", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "Dell EMC ECS", "scheme": "s3a://", "config_type": "s3_compatible", "note": "The dedicated `dell_ecs` config type is deprecated; use `s3_compatible`.", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "Google Cloud Storage", "scheme": "gs://", "config_type": "gcs", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "Azure Blob Storage (Gen1)", "scheme": "wasbs://", "config_type": "azure_gen1", "note": "Requires storageAccountName and storageAccountKey.", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "Azure Data Lake Storage Gen2", "scheme": "abfs://", "config_type": "azure_gen2", "note": "Requires storageAccountName and storageAccountKey.", "status": "verified", "sources": ["S3", "S4", "S8"] },
+    { "name": "Digital Ocean Spaces", "scheme": "s3a://", "config_type": "s3_compatible", "status": "verified", "sources": ["S3"] },
+    { "name": "Hadoop HDFS", "scheme": null, "config_type": null, "note": "Listed among storage technologies on the What is IOMETE page; the deployment architecture page enumerates object-storage config types only. Confirm the supported pattern with IOMETE.", "status": "needs_confirmation", "sources": ["S3", "S8"] },
+    { "name": "NFS", "scheme": null, "config_type": null, "note": "Listed among storage technologies on the What is IOMETE page; not an object-storage config type. Confirm the supported pattern with IOMETE.", "status": "needs_confirmation", "sources": ["S3", "S8"] }
+  ],
+  "integrations": [
+    { "name": "Power BI", "category": "Business intelligence", "status": "verified", "sources": ["S3", "S5"] },
+    { "name": "Tableau", "category": "Business intelligence", "status": "verified", "sources": ["S3", "S5"] },
+    { "name": "Metabase", "category": "Business intelligence", "status": "verified", "sources": ["S5"] },
+    { "name": "Apache Superset", "category": "Business intelligence", "status": "verified", "sources": ["S5"] },
+    { "name": "Redash", "category": "Business intelligence", "status": "verified", "sources": ["S5"] },
+    { "name": "ThoughtSpot", "category": "Analytics and querying", "status": "verified", "sources": ["S5"] },
+    { "name": "dbt", "category": "Transformation", "status": "verified", "sources": ["S2", "S5"] },
+    { "name": "Apache Airflow", "category": "Orchestration", "status": "verified", "sources": ["S3", "S5"] },
+    { "name": "OpenMetadata", "category": "Catalog and metadata", "status": "verified", "sources": ["S5"] },
+    { "name": "Collate", "category": "Catalog and metadata", "status": "verified", "sources": ["S5"] },
+    { "name": "Ataccama", "category": "Data quality and governance", "status": "verified", "sources": ["S5"] },
+    { "name": "Monte Carlo", "category": "Data observability", "status": "verified", "sources": ["S5"] },
+    { "name": "Stardog", "category": "Knowledge graphs", "status": "verified", "sources": ["S5"] },
+    { "name": "Wasabi", "category": "Object storage", "status": "verified", "sources": ["S5"] },
+    { "name": "DBeaver", "category": "Database tools", "status": "verified", "sources": ["S5"] },
+    { "name": "Dataiku", "category": "Database tools", "status": "verified", "sources": ["S5"] },
+    { "name": "Git", "category": "Version control", "status": "verified", "sources": ["S3", "S5"] },
+    { "name": "Jupyter", "category": "Notebooks", "status": "verified", "sources": ["S3", "S4"] },
+    { "name": "JDBC / ODBC (HiveServer2)", "category": "Connectivity", "status": "verified", "sources": ["S3", "S4"] },
+    { "name": "Arrow Flight SQL", "category": "Connectivity", "status": "verified", "sources": ["S3", "S4"] },
+    { "name": "Spark Connect", "category": "Connectivity", "status": "verified", "sources": ["S1", "S3", "S4"] }
+  ],
+  "deployment_models": [
+    {
+      "id": "on-premises",
+      "name": "On-premises",
+      "description": "Deployed into your own Kubernetes cluster in your own data centre. Scratch directory is `/local1`.",
+      "best_for": "Strict data-residency rules, existing data-centre investment, air-gapped or heavily restricted networks.",
+      "status": "verified",
+      "sources": ["S1", "S3", "S8"]
+    },
+    {
+      "id": "private-cloud",
+      "name": "Private cloud",
+      "description": "Deployed into a Kubernetes cluster in a private or dedicated cloud environment.",
+      "best_for": "Organisations wanting cloud operating models with dedicated tenancy.",
+      "status": "verified",
+      "sources": ["S1", "S6"]
+    },
+    {
+      "id": "public-cloud",
+      "name": "Public cloud",
+      "description": "Deployed into your own Kubernetes cluster on AWS, Azure or Google Cloud, using that cloud's object storage. Only AWS offers zone-aware scheduling.",
+      "best_for": "Teams already standardised on a cloud provider who still want to own the data plane.",
+      "status": "verified",
+      "sources": ["S1", "S3", "S8"]
+    },
+    {
+      "id": "hybrid",
+      "name": "Hybrid",
+      "description": "IOMETE describes its model as \"Hybrid first\" — on-premises and cloud footprints operated together.",
+      "best_for": "Phased migration, regional residency, or keeping sensitive domains on-premises while bursting elsewhere.",
+      "status": "verified",
+      "sources": ["S1", "S3"]
+    }
+  ],
+  "personas": [
+    {
+      "id": "cto",
+      "label": "CTO / Technology leader",
+      "short": "Strategy, risk and total cost",
+      "opening": "IOMETE is a data lakehouse you run yourself. It gives you warehouse-grade SQL analytics and AI workloads over one open copy of your data, deployed into Kubernetes you already control.",
+      "cares_about": [
+        "Avoiding a decade-long lock-in to one vendor's storage format",
+        "Where data physically sits and who can subpoena it",
+        "Cost trajectory as data volume grows",
+        "Whether the team can actually operate it"
+      ],
+      "key_points": [
+        {
+          "title": "You own the data plane",
+          "body": "IOMETE states the platform \"operates entirely within your infrastructure\" and that \"no data is sent outside of your organization\". The deployment unit is a Helm chart into your Kubernetes cluster.",
+          "sources": ["S3", "S4", "S8"]
+        },
+        {
+          "title": "Open formats, not a proprietary store",
+          "body": "Tables are Apache Iceberg in your object storage, and IOMETE ships an Iceberg REST Catalog implementing the open specification — so other Iceberg-compatible engines can read the same tables.",
+          "sources": ["S4", "S7"]
+        },
+        {
+          "title": "Cost has explicit dials",
+          "body": "Documented levers: spot/preemptible executors, reserved capacity for always-on components, node-type right-sizing, and executor auto-scaling down to zero when idle. IOMETE's own marketing claims 2-5x savings versus SaaS; treat that as a vendor claim to be modelled against your own workload.",
+          "sources": ["S1", "S9"]
+        },
+        {
+          "title": "The honest prerequisite",
+          "body": "This is Kubernetes-native software. You need a Kubernetes cluster, object storage and a PostgreSQL server, plus the skills to operate them — or IOMETE's forward-deployed engineers alongside your team.",
+          "sources": ["S1", "S4", "S8"]
+        }
+      ],
+      "questions_to_ask_iomete": [
+        "What does the reference deployment look like for our data volume and concurrency?",
+        "What is the upgrade cadence and what is our rollback path?",
+        "Which Iceberg-compatible external engines are formally tested against your REST catalog?",
+        "What is the commercial model for Enterprise Edition multi-region?"
+      ]
+    },
+    {
+      "id": "data-engineer",
+      "label": "Data engineer",
+      "short": "Pipelines, Spark and day-2 operations",
+      "opening": "You get managed Spark on Kubernetes with Iceberg tables, a job orchestrator, Spark Connect for local development, and a SQL service — without assembling those pieces yourself.",
+      "cares_about": [
+        "Whether Spark is real Spark or a fork",
+        "How jobs are scheduled, retried and observed",
+        "Local development loop",
+        "What breaks at 3am and how to see it"
+      ],
+      "key_points": [
+        {
+          "title": "Real Spark, managed",
+          "body": "A Spark Operator (Controller, Webhook, Submit Service) turns workload definitions into pods. Each compute cluster is a Spark driver with dynamic allocation: start at one executor, scale to a configured max, scale to zero when idle.",
+          "sources": ["S4", "S9"]
+        },
+        {
+          "title": "Iceberg does the hard part",
+          "body": "ACID transactions, time travel and rollback, schema and partition evolution, and concurrent writes — so a failed pipeline run does not leave a half-written table.",
+          "sources": ["S7"]
+        },
+        {
+          "title": "Develop locally, execute remotely",
+          "body": "Spark Connect is exposed on port 15002 per cluster, so you can drive a remote Spark session from your editor in Python, R or SQL. Arrow Flight (port 33333, when enabled) moves large result sets efficiently.",
+          "sources": ["S1", "S3", "S4"]
+        },
+        {
+          "title": "Scheduling and observability",
+          "body": "Prefect Server holds workflow state and a per-namespace Prefect Worker runs scheduled Spark jobs. A Spark History Server reads event logs from object storage for post-mortems, and a Health Check Service polls every 10 seconds keeping 48 hours of history.",
+          "sources": ["S4"]
+        },
+        {
+          "title": "Isolation you control",
+          "body": "Per-team namespaces with CPU and memory quotas, node selectors and tolerations separating platform services from Spark workloads, and priority classes (`iomete-compute`, `iomete-spark-job`, `iomete-notebook`, `iomete-operational-support`).",
+          "sources": ["S9"]
+        }
+      ],
+      "questions_to_ask_iomete": [
+        "Which Spark version ships in the current release and what is the upgrade policy?",
+        "What are the practical ceilings on executors per cluster and concurrent queries?",
+        "How do we wire platform metrics and logs into our existing observability stack?",
+        "What is the recommended CI pattern for promoting Spark jobs across environments?"
+      ]
+    },
+    {
+      "id": "data-analyst",
+      "label": "Data analyst",
+      "short": "Getting answers out, in SQL",
+      "opening": "You get a browser SQL editor over all the company's data, and your existing BI tool can connect to the same thing. No extracts, no waiting for a nightly copy into a separate warehouse.",
+      "cares_about": [
+        "Can I write normal SQL?",
+        "Will my dashboards still work?",
+        "How fast is it, and why was that query slow?",
+        "Can I share and reuse my work?"
+      ],
+      "key_points": [
+        {
+          "title": "A real SQL workspace in the browser",
+          "body": "Auto-completion, worksheets, query history and visual explain plans. Multiple people can edit a query at the same time (optional Collaboration Service).",
+          "sources": ["S1", "S3", "S4", "S10"]
+        },
+        {
+          "title": "Your BI tool keeps working",
+          "body": "Connect through the SQL endpoint — HiveServer2 JDBC/ODBC on port 10000, or Arrow Flight. Documented integrations include Power BI, Tableau, Metabase, Apache Superset and Redash.",
+          "sources": ["S3", "S4", "S5"]
+        },
+        {
+          "title": "Find the table before you query it",
+          "body": "The Data Catalog carries metadata, lineage and classification tags with search behind it, so you can locate a trustworthy table instead of guessing.",
+          "sources": ["S3", "S4"]
+        },
+        {
+          "title": "Diagnose your own slow query",
+          "body": "Query Monitoring lists active queries across clusters, and history retains runtime statistics and execution plans.",
+          "sources": ["S1", "S10"]
+        },
+        {
+          "title": "Version your SQL",
+          "body": "Git integration gives worksheets and queries real version control.",
+          "sources": ["S3", "S5"]
+        }
+      ],
+      "questions_to_ask_iomete": [
+        "Which SQL dialect and functions are available, and are there documented gaps versus our current warehouse?",
+        "How does row- and column-level masking appear to me as an analyst?",
+        "What is the expected latency for a dashboard refresh against a cluster that has scaled to zero?"
+      ]
+    },
+    {
+      "id": "security-compliance",
+      "label": "Security / Compliance lead",
+      "short": "Residency, access control and evidence",
+      "opening": "The whole platform runs inside your perimeter, identity comes from your existing directory, and data access is enforced by Apache Ranger at the catalog layer rather than being left to each client tool.",
+      "cares_about": [
+        "Where does data leave our boundary? (Answer: it should not.)",
+        "Who can read which rows and columns, and can I prove it?",
+        "Does it use our SSO and joiner/leaver process?",
+        "What attestations exist, and are they current?"
+      ],
+      "key_points": [
+        {
+          "title": "Residency by architecture",
+          "body": "IOMETE states the platform \"operates entirely within your infrastructure\" and \"no data is sent outside of your organization\". Table data, Spark event logs and SQL results all live in object storage you own.",
+          "sources": ["S3", "S4", "S8"]
+        },
+        {
+          "title": "Enforcement at the catalog, not the client",
+          "body": "The Iceberg REST Catalog Service enforces Apache Ranger policies on data access. That matters: a policy enforced in one BI tool is a suggestion, a policy enforced at the catalog applies to every engine that reads the tables.",
+          "sources": ["S4"]
+        },
+        {
+          "title": "Three separable authorization levels",
+          "body": "Platform (Core Service), data (Ranger via the Iceberg REST Catalog) and resource (RAS, with VIEW, UPDATE and MANAGE). Access control is documented down to table, row, column, user, group, team and department level, with tag-based policies and masking using fictional values.",
+          "sources": ["S1", "S4"]
+        },
+        {
+          "title": "Your identity provider",
+          "body": "Built-in username/password plus LDAP and SSO via SAML or OIDC through the Identity Service — so access follows your existing lifecycle process.",
+          "sources": ["S4"]
+        },
+        {
+          "title": "Attestations: published claims, verify them yourself",
+          "body": "IOMETE's homepage states SOC 2 Certified, HIPAA Compliant and GDPR Compliant and links a Vanta trust center. COMPASS reports these as vendor-published claims. Request the current reports under NDA during procurement.",
+          "sources": ["S1"],
+          "caveat": true
+        },
+        {
+          "title": "Network surface",
+          "body": "A single Gateway is the ingress point for UI, API, Spark Connect, Arrow Flight and WebSocket traffic, fronted by your ingress controller — one place to apply TLS and network policy. Note gRPC routes carry a 24-hour read timeout.",
+          "sources": ["S4", "S8"]
+        }
+      ],
+      "questions_to_ask_iomete": [
+        "Can we see the current SOC 2 report and the scope statement?",
+        "Is a fully air-gapped installation supported, and what is the image and update process?",
+        "How are audit logs for data access emitted, retained and exported to our SIEM?",
+        "How are platform secrets (the `data-plane` Kubernetes Secret, storage keys) managed and rotated?",
+        "What is the encryption-at-rest and in-transit posture across the Gateway, object storage and PostgreSQL?"
+      ]
+    },
+    {
+      "id": "business",
+      "label": "Business decision maker",
+      "short": "Outcomes, cost and risk — no jargon",
+      "opening": "Most companies keep paying twice: once to store data cheaply, again to copy it somewhere expensive so it can be analysed. IOMETE lets you analyse the cheap copy directly, on hardware you already control.",
+      "cares_about": [
+        "What does this let us do that we cannot do today?",
+        "What will it cost, and is that predictable?",
+        "What is the risk if it goes wrong?",
+        "How long until we see value?"
+      ],
+      "key_points": [
+        {
+          "title": "One copy of the truth",
+          "body": "Analytics, dashboards and AI workloads read the same governed tables. Fewer copies means fewer reconciliation arguments about whose number is right.",
+          "sources": ["S3", "S6"]
+        },
+        {
+          "title": "Spend you can steer",
+          "body": "Compute scales down to zero when nobody is querying, and executors can run on discounted spot capacity. IOMETE claims 2-5x savings versus SaaS lakehouses — a vendor claim worth modelling against your own usage, not taking as given.",
+          "sources": ["S1", "S9"]
+        },
+        {
+          "title": "Regulatory headroom",
+          "body": "Because the platform runs inside your own environment, data-residency and sector rules that rule out vendor-hosted SaaS are far easier to satisfy.",
+          "sources": ["S1", "S3"]
+        },
+        {
+          "title": "You are not locked in",
+          "body": "Data sits in open Apache Iceberg format in your own storage. If you ever change platforms, the data does not need to be exported from a vendor's proprietary system.",
+          "sources": ["S4", "S7"]
+        },
+        {
+          "title": "The honest trade-off",
+          "body": "Self-hosting means you own the operations. That requires Kubernetes capability in-house or IOMETE's forward-deployed engineers working with your team. If your organisation has no appetite for running infrastructure, a managed SaaS lakehouse may genuinely suit you better.",
+          "sources": ["S1", "S4"],
+          "caveat": true
+        }
+      ],
+      "questions_to_ask_iomete": [
+        "What does a realistic first-90-days adoption plan look like for a team our size?",
+        "What is the total cost of ownership including the infrastructure we must provide?",
+        "Which reference customers in our sector can we speak to?",
+        "What does forward-deployed engineering cover, and for how long?"
+      ]
+    }
+  ],
+  "explainer_questions": [
+    { "id": "q1", "question": "What is IOMETE?", "concept_refs": ["data-lakehouse"], "answer": "IOMETE is a Data Lakehouse Platform for AI and Analytics built on Apache Spark, Apache Iceberg and Kubernetes. You deploy it into infrastructure you control — on-premises, in a private cloud, in a public cloud, or hybrid — and it gives you SQL analytics, data engineering, notebooks and governance over one open copy of your data.", "sources": ["S3", "S4"] },
+    { "id": "q2", "question": "What problem does it solve?", "concept_refs": [], "answer": "Two at once. First, the split between cheap storage and expensive analytics: most organisations store data in a lake and then copy it into a warehouse to query it, paying twice and maintaining the pipeline in between. Second, sovereignty: cloud-hosted lakehouses require handing your data to a vendor, which data-residency law and internal security policy often forbid. IOMETE puts a lakehouse inside your own perimeter.", "sources": ["S1", "S3", "S6"] },
+    { "id": "q3", "question": "What is a data lake?", "concept_refs": ["data-lake"], "answer": "A large, cheap storage area holding raw files of any shape without deciding up front how they will be used. Flexible and inexpensive, but hard to query reliably.", "sources": [] },
+    { "id": "q4", "question": "What is a data warehouse?", "concept_refs": ["data-warehouse"], "answer": "A highly organised analytical database. Data is cleaned and structured before loading, which makes queries fast and trustworthy — but it is expensive at scale and poorly suited to raw or semi-structured data and machine learning.", "sources": [] },
+    { "id": "q5", "question": "What is a data lakehouse?", "concept_refs": ["data-lakehouse"], "answer": "One system that keeps the lake's cheap open storage and adds the warehouse's reliability and SQL performance on top. IOMETE describes this as combining \"the flexibility of data lakes with the performance of data warehouses\". Apache Iceberg is the piece that makes files behave like real transactional tables.", "sources": ["S6", "S7"] },
+    { "id": "q6", "question": "What makes IOMETE sovereign?", "concept_refs": ["sovereignty"], "answer": "It runs entirely inside your own infrastructure. IOMETE states the platform \"operates entirely within your infrastructure\" and that \"no data is sent outside of your organization\". Table data, Spark event logs and SQL results all live in object storage you own; platform metadata lives in a PostgreSQL server you run.", "sources": ["S1", "S3", "S4", "S8"] },
+    { "id": "q7", "question": "How does Apache Spark fit in?", "concept_refs": [], "answer": "Spark is the processing engine — the workforce that splits a large job across many machines. Every IOMETE compute cluster is a Spark driver with auto-scaling executors, and Spark also runs batch and streaming jobs and backs the notebook experience. Spark Connect lets you drive a remote Spark session from your own editor.", "sources": ["S4", "S7", "S9"] },
+    { "id": "q8", "question": "How does Apache Iceberg fit in?", "concept_refs": [], "answer": "Iceberg is the table format — the index and ledger that turns files in object storage into real tables with ACID transactions, time travel and rollback, schema and partition evolution, and safe concurrent writes. IOMETE ships an Iceberg REST Catalog Service implementing the open specification, and enforces Apache Ranger access policies there.", "sources": ["S4", "S7"] },
+    { "id": "q9", "question": "How does Kubernetes fit in?", "concept_refs": [], "answer": "Kubernetes is the substrate. IOMETE installs as the `iomete-data-plane-enterprise` Helm chart into a Kubernetes cluster, on any cloud or on-premises. Platform services run in one namespace; Spark workloads can be spread across per-team namespaces with their own CPU and memory quotas. Kubernetes handles scheduling, restarts and node scaling — via Karpenter, GKE Node Auto-Provisioning or the AKS Cluster Autoscaler in the cloud, or manually on-premises.", "sources": ["S3", "S4", "S8", "S9"] },
+    { "id": "q10", "question": "How can IOMETE integrate with existing infrastructure?", "concept_refs": [], "answer": "Through standard interfaces rather than replacement. BI tools connect over HiveServer2 JDBC/ODBC or Arrow Flight; dbt handles transformation; Apache Airflow can orchestrate; the Iceberg REST Catalog lets other Iceberg-compatible engines read the same tables; identity comes from LDAP, SAML or OIDC; storage can be AWS S3, GCS, Azure Gen1/Gen2, Apache Ozone, MinIO, Dell ECS or any S3-compatible target. IOMETE also documents integrations with OpenMetadata, Collate, Ataccama, Monte Carlo, ThoughtSpot, Stardog, DBeaver and Dataiku.", "sources": ["S3", "S4", "S5", "S8"] },
+    { "id": "q11", "question": "What are the relevant enterprise use cases?", "concept_refs": [], "answer": "IOMETE's product pages name data warehousing, data governance, data engineering, data management, data ingestion, business intelligence, real-time analytics, artificial intelligence, machine learning and data science. In practice the strongest fits are: consolidating a lake-plus-warehouse pair into one platform; analytics under data-residency constraints; a data-mesh operating model using domains; and running AI/ML next to governed data without extracting it.", "sources": ["S1", "S3"] }
+  ],
+  "do_not_claim": [
+    "Any specific pricing figure, discount or contract term.",
+    "Named IOMETE customers, logos or case-study outcomes.",
+    "Quantified cost savings for a specific prospect's workload. IOMETE's own 2-5x / 2-3x figures may be cited only as vendor claims, with the discrepancy acknowledged.",
+    "Performance benchmarks, query latency figures or throughput numbers.",
+    "Service level agreements, uptime guarantees or support response times.",
+    "Certifications beyond the SOC 2 / HIPAA / GDPR statements published on iomete.com, which must be presented as vendor claims pointing to the trust center.",
+    "Integrations, connectors or storage backends not listed in `integrations` / `storage_backends` with status `verified`.",
+    "That a COMPASS fit assessment is an official IOMETE compatibility determination.",
+    "That any support ticket, cluster or playbook in COMPASS is a real IOMETE incident record — all of it is synthetic demo data."
+  ]
+}
