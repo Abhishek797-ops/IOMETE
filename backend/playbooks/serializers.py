@@ -1,0 +1,414 @@
+"""
+Playbook and Resolution Replay serializers.
+
+The recurring theme: trust state is never implicit. Every playbook payload carries
+`is_trusted`, `trust_notice` and its approval provenance, so a client cannot accidentally
+render a draft the same way it renders approved knowledge.
+"""
+
+from __future__ import annotations
+
+from rest_framework import serializers
+
+from aiengine.services.normalization import symptom_label
+
+from .models import (
+    ApprovalStatus,
+    KnowledgeApproval,
+    PlaybookExecution,
+    PlaybookMatch,
+    PlaybookStep,
+    PlaybookStepResponse,
+    ResolutionPlaybook,
+    RiskLevel,
+)
+
+
+class PlaybookStepSerializer(serializers.ModelSerializer):
+    step_type_label = serializers.CharField(source="get_step_type_display", read_only=True)
+    risk_level_label = serializers.CharField(source="get_risk_level_display", read_only=True)
+    requires_approval = serializers.BooleanField(read_only=True)
+    is_read_only = serializers.BooleanField(read_only=True)
+    commands_notice = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PlaybookStep
+        fields = (
+            "id", "order", "key", "title", "plain_explanation", "what_to_inspect",
+            "expected_observation", "why_this_step", "step_type", "step_type_label",
+            "risk_level", "risk_level_label", "blast_radius", "commands",
+            "commands_notice", "response_kind", "response_options", "branches",
+            "is_terminal", "requires_approval", "is_read_only", "references",
+        )
+
+    def get_commands_notice(self, obj) -> str:
+        if not obj.commands:
+            return ""
+        return (
+            "These commands are shown for you to run yourself. COMPASS never executes "
+            "anything against your cluster."
+        )
+
+
+class PlaybookListSerializer(serializers.ModelSerializer):
+    component_label = serializers.CharField(source="get_component_display", read_only=True)
+    category_label = serializers.CharField(source="get_category_display", read_only=True)
+    risk_level_label = serializers.CharField(source="get_risk_level_display", read_only=True)
+    approval_status_label = serializers.CharField(
+        source="get_approval_status_display", read_only=True
+    )
+    approved_by_name = serializers.CharField(
+        source="approved_by.full_name", read_only=True, default=None
+    )
+    symptom_labels = serializers.SerializerMethodField()
+    is_trusted = serializers.BooleanField(read_only=True)
+    is_review_overdue = serializers.BooleanField(read_only=True)
+    success_rate = serializers.FloatField(read_only=True, allow_null=True)
+    trust_notice = serializers.SerializerMethodField()
+    step_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ResolutionPlaybook
+        fields = (
+            "id", "playbook_id", "version", "title", "description", "component",
+            "component_label", "category", "category_label", "risk_level",
+            "risk_level_label", "approval_status", "approval_status_label", "is_trusted",
+            "trust_notice", "is_shared", "applicable_versions", "applicable_environments",
+            "applicable_deployments", "symptoms", "symptom_labels", "approved_by",
+            "approved_by_name", "approved_at", "last_reviewed_at", "review_due_at",
+            "is_review_overdue", "usage_count", "success_count", "failure_count",
+            "success_rate", "step_count", "generated_by", "is_synthetic",
+            "created_at", "updated_at",
+        )
+        read_only_fields = fields
+
+    def get_symptom_labels(self, obj) -> list[str]:
+        return [symptom_label(s) for s in (obj.symptoms or [])]
+
+    def get_step_count(self, obj) -> int:
+        return obj.steps.count()
+
+    def get_trust_notice(self, obj) -> str:
+        """
+        One sentence stating exactly what this playbook's status means.
+
+        Returned with every payload so the client renders the right thing without
+        reimplementing the policy — and so a draft can never be styled as verified
+        knowledge by omission.
+        """
+        if obj.approval_status == ApprovalStatus.APPROVED:
+            if not obj.is_shared:
+                return (
+                    "Approved, but marked not shared: it contains customer-specific detail "
+                    "and is only offered within its originating organization."
+                )
+            overdue = (
+                " It is overdue for re-review, so product behaviour may have changed."
+                if obj.is_review_overdue
+                else ""
+            )
+            return (
+                f"Verified knowledge. Reviewed and approved by "
+                f"{obj.approved_by.full_name if obj.approved_by else 'an FDE'}"
+                + (f" on {obj.approved_at:%d %b %Y}" if obj.approved_at else "")
+                + f".{overdue}"
+            )
+        if obj.approval_status == ApprovalStatus.DRAFT:
+            return (
+                f"Unreviewed draft, generated by {obj.generated_by or 'automation'}. It is "
+                "not trusted knowledge and is never recommended to a customer."
+            )
+        if obj.approval_status == ApprovalStatus.IN_REVIEW:
+            return "Under FDE review. Not yet trusted knowledge."
+        if obj.approval_status == ApprovalStatus.REJECTED:
+            return (
+                "Rejected during review and retained for the record. Not a recommended fix."
+                + (f" Reason: {obj.rejection_reason}" if obj.rejection_reason else "")
+            )
+        if obj.approval_status == ApprovalStatus.DEPRECATED:
+            return (
+                "Deprecated. Retained for audit and for anyone who followed it previously, "
+                "but excluded from recommendations."
+            )
+        return ""
+
+
+class PlaybookDetailSerializer(PlaybookListSerializer):
+    steps = PlaybookStepSerializer(many=True, read_only=True)
+    source_ticket_reference = serializers.CharField(
+        source="source_ticket.reference", read_only=True, default=None
+    )
+    cluster_title = serializers.CharField(source="cluster.title", read_only=True, default=None)
+    supersedes_version = serializers.IntegerField(
+        source="supersedes.version", read_only=True, default=None
+    )
+
+    class Meta(PlaybookListSerializer.Meta):
+        fields = (*PlaybookListSerializer.Meta.fields, "confirmed_root_cause", "preconditions", "expected_evidence", "resolution_instructions", "verification_steps", "known_limitations", "applicable_cloud_providers", "steps", "source_ticket", "source_ticket_reference", "cluster", "cluster_title", "supersedes", "supersedes_version", "rejection_reason", "redaction_notes")
+        read_only_fields = fields
+
+
+class FdePlaybookSerializer(PlaybookDetailSerializer):
+    """
+    Adds provenance an FDE needs and a customer must not see.
+
+    `origin_organization` is withheld from customers: knowing that a fix came from a named
+    competitor's incident is exactly the cross-tenant inference approved playbooks are
+    redacted to prevent.
+    """
+
+    origin_organization_name = serializers.CharField(
+        source="origin_organization.name", read_only=True, default=None
+    )
+    created_by_name = serializers.CharField(
+        source="created_by.full_name", read_only=True, default=None
+    )
+
+    class Meta(PlaybookDetailSerializer.Meta):
+        fields = (*PlaybookDetailSerializer.Meta.fields, "origin_organization", "origin_organization_name", "created_by", "created_by_name")
+        read_only_fields = fields
+
+
+class PlaybookWriteSerializer(serializers.ModelSerializer):
+    """
+    FDE editing of a playbook's content.
+
+    `approval_status`, `approved_by`, `approved_at` and the outcome counters are absent on
+    purpose: approval happens through the dedicated approve/reject actions so that the
+    graph validation and the `KnowledgeApproval` audit record cannot be bypassed by a PATCH.
+    """
+
+    class Meta:
+        model = ResolutionPlaybook
+        fields = (
+            "title", "description", "component", "category", "applicable_versions",
+            "applicable_environments", "applicable_deployments",
+            "applicable_cloud_providers", "symptoms", "confirmed_root_cause",
+            "preconditions", "expected_evidence", "resolution_instructions",
+            "verification_steps", "known_limitations", "risk_level", "is_shared",
+            "redaction_notes",
+        )
+
+    def validate_applicable_versions(self, value: str) -> str:
+        from common.versioning import version_matches
+
+        if not value or value.strip() in {"*", "any"}:
+            return value
+        # Probe the spec with a representative version. `None` means unparseable.
+        if version_matches("3.19.1", value) is None:
+            raise serializers.ValidationError(
+                "That version spec could not be parsed. Use forms like '>=3.0,<4.0', "
+                "'==3.19.1' or '*'."
+            )
+        return value
+
+
+class PlaybookStepWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlaybookStep
+        fields = (
+            "order", "key", "title", "plain_explanation", "what_to_inspect",
+            "expected_observation", "why_this_step", "step_type", "risk_level",
+            "blast_radius", "commands", "response_kind", "response_options",
+            "branches", "is_terminal", "references",
+        )
+
+    def validate(self, attrs):
+        from .models import APPROVAL_REQUIRED_STEP_TYPES
+
+        step_type = attrs.get("step_type", getattr(self.instance, "step_type", None))
+        blast_radius = attrs.get("blast_radius", getattr(self.instance, "blast_radius", ""))
+        if step_type in APPROVAL_REQUIRED_STEP_TYPES and not blast_radius:
+            raise serializers.ValidationError(
+                {
+                    "blast_radius": (
+                        "A step that can change a running system must state what is "
+                        "affected if it goes wrong. It is shown in the confirmation gate."
+                    )
+                }
+            )
+        return attrs
+
+
+class PlaybookMatchSerializer(serializers.ModelSerializer):
+    playbook = PlaybookListSerializer(read_only=True)
+    gate_status_label = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PlaybookMatch
+        fields = (
+            "id", "rank", "playbook", "similarity_score", "resolution_confidence",
+            "gate_status", "gate_status_label", "gate_reason", "evidence",
+            "channel_scores", "created_at",
+        )
+        read_only_fields = fields
+
+    def get_gate_status_label(self, obj) -> str:
+        return {
+            "clean": "Applicable to your environment",
+            "penalised": "Partially applicable",
+            "gated": "Not applicable here",
+        }.get(obj.gate_status, obj.gate_status)
+
+
+class PlaybookStepResponseSerializer(serializers.ModelSerializer):
+    step_title = serializers.CharField(source="step.title", read_only=True)
+    step_key = serializers.CharField(source="step.key", read_only=True)
+    step_type = serializers.CharField(source="step.step_type", read_only=True)
+    expected_observation = serializers.CharField(
+        source="step.expected_observation", read_only=True
+    )
+    completed_by_name = serializers.CharField(
+        source="completed_by.full_name", read_only=True, default=None
+    )
+    approval_granted_by_name = serializers.CharField(
+        source="approval_granted_by.full_name", read_only=True, default=None
+    )
+
+    class Meta:
+        model = PlaybookStepResponse
+        fields = (
+            "id", "sequence", "step", "step_key", "step_title", "step_type",
+            "expected_observation", "response_value", "observation",
+            "matched_expectation", "completed_by", "completed_by_name",
+            "approval_granted_by", "approval_granted_by_name", "approval_granted_at",
+            "approval_note", "next_step_key", "created_at",
+        )
+        read_only_fields = fields
+
+
+class ExecutionSerializer(serializers.ModelSerializer):
+    playbook_title = serializers.CharField(source="playbook.title", read_only=True)
+    playbook_slug = serializers.CharField(source="playbook.playbook_id", read_only=True)
+    ticket_reference = serializers.CharField(source="ticket.reference", read_only=True)
+    status_label = serializers.CharField(source="get_status_display", read_only=True)
+    started_by_name = serializers.CharField(
+        source="started_by.full_name", read_only=True, default=None
+    )
+    responses = PlaybookStepResponseSerializer(many=True, read_only=True)
+    current_step_detail = serializers.SerializerMethodField()
+    steps_completed = serializers.IntegerField(read_only=True)
+    total_steps = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PlaybookExecution
+        fields = (
+            "id", "ticket", "ticket_reference", "playbook", "playbook_title",
+            "playbook_slug", "playbook_version", "status", "status_label",
+            "started_by", "started_by_name", "current_step", "current_step_detail",
+            "path", "outcome_summary", "outcome_evidence", "diagnostic_summary",
+            "steps_completed", "total_steps", "responses", "completed_at",
+            "duration_seconds", "created_at",
+        )
+        read_only_fields = fields
+
+    def get_total_steps(self, obj) -> int:
+        """
+        Total steps in the playbook — an upper bound, not a target.
+
+        A branching workflow can legitimately finish in three of seven steps, so the client
+        must not render this as "3 of 7 complete" progress. It is exposed so the UI can say
+        "up to 7 steps" instead.
+        """
+        return obj.playbook.steps.count()
+
+    def get_current_step_detail(self, obj) -> dict | None:
+        if obj.current_step is None:
+            return None
+        from .services.execution import serialize_step
+
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if user is None:
+            return PlaybookStepSerializer(obj.current_step).data
+        return serialize_step(obj.current_step, user=user, execution=obj)
+
+
+class ExecutionStartSerializer(serializers.Serializer):
+    ticket = serializers.UUIDField()
+    playbook = serializers.UUIDField()
+
+
+class ExecutionAdvanceSerializer(serializers.Serializer):
+    response_value = serializers.CharField(allow_blank=True)
+    observation = serializers.CharField(required=False, allow_blank=True)
+    approval_note = serializers.CharField(
+        required=False, allow_blank=True,
+        help_text="Required context when approving a system-changing step.",
+    )
+
+
+class ExecutionCompleteSerializer(serializers.Serializer):
+    outcome = serializers.ChoiceField(
+        choices=[
+            ("resolved", "Resolved"),
+            ("partially_resolved", "Partially resolved"),
+            ("not_resolved", "Not resolved"),
+            ("escalated", "Escalated"),
+            ("abandoned", "Abandoned"),
+        ]
+    )
+    outcome_summary = serializers.CharField(required=False, allow_blank=True)
+    outcome_evidence = serializers.CharField(
+        required=False, allow_blank=True,
+        help_text="Required when the outcome is 'resolved'. Completing the steps is not "
+        "by itself evidence that the problem is fixed.",
+    )
+
+
+class KnowledgeApprovalSerializer(serializers.ModelSerializer):
+    reviewer_name = serializers.CharField(
+        source="reviewer.full_name", read_only=True, default=None
+    )
+    decision_label = serializers.CharField(source="get_decision_display", read_only=True)
+
+    class Meta:
+        model = KnowledgeApproval
+        fields = (
+            "id", "playbook", "playbook_version", "reviewer", "reviewer_name",
+            "reviewer_label", "decision", "decision_label", "notes", "redactions_made",
+            "applicability_changes", "review_due_at", "created_at",
+        )
+        read_only_fields = fields
+
+
+class ApproveSerializer(serializers.Serializer):
+    notes = serializers.CharField(required=False, allow_blank=True)
+    redactions_made = serializers.CharField(
+        required=False, allow_blank=True,
+        help_text="What you removed before approving. Recorded on the playbook.",
+    )
+    applicable_versions = serializers.CharField(required=False, allow_blank=True)
+    applicable_environments = serializers.ListField(
+        child=serializers.CharField(), required=False
+    )
+    risk_level = serializers.ChoiceField(choices=RiskLevel.choices, required=False)
+    is_shared = serializers.BooleanField(required=False)
+    review_interval_days = serializers.IntegerField(
+        required=False, min_value=7, max_value=1095, default=180
+    )
+
+
+class RejectSerializer(serializers.Serializer):
+    reason = serializers.CharField(
+        help_text="Why this is unsuitable. Retained with the draft — the reason is itself "
+        "institutional knowledge."
+    )
+
+
+class DeprecateSerializer(serializers.Serializer):
+    reason = serializers.CharField()
+
+
+class ExtractSerializer(serializers.Serializer):
+    ticket = serializers.UUIDField()
+    force = serializers.BooleanField(
+        default=False,
+        help_text="Create a draft even when a possible duplicate was detected.",
+    )
+
+
+class GraphIssueSerializer(serializers.Serializer):
+    severity = serializers.CharField()
+    step_key = serializers.CharField()
+    message = serializers.CharField()
