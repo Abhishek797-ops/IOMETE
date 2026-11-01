@@ -1,0 +1,39 @@
+databases:
+  - name: iomete-db
+    databaseName: compass
+    user: compass
+    plan: free
+    postgresMajorVersion: 16
+
+services:
+  - type: web
+    name: iomete-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && python manage.py check_knowledge --strict && python manage.py seed_demo && gunicorn compass.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: compass.settings.prod
+      - key: DJANGO_SECRET_KEY
+        value: MK5JNaHRJYb8Zgw8u-a0i-11xZNOAoavfA3fstIknFb41gJJugyMWWJJZ3IHF9TEHWs
+      - key: COMPASS_ENCRYPTION_KEY
+        value: mOEswRg0JA6nw_SML_wZKyGzoRKKdvU8HmriWyqkNZM=
+      - key: DATABASE_URL
+        fromDatabase:
+          name: iomete-db
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com,localhost
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://*.vercel.app,http://localhost:3000
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com,https://*.vercel.app
+      - key: COMPASS_DEMO_MODE
+        value: "true"
+      - key: USE_PGVECTOR
+        value: "true"
