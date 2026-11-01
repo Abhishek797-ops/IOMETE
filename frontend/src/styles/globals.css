@@ -1,0 +1,597 @@
+@import "tailwindcss";
+
+/*
+ * ===================================================================================
+ * IOMETE COMPASS — design tokens
+ *
+ * Two surface families, because the product has two audiences:
+ *
+ *   Public pages (/, /explore, /architecture, /fit-finder, /lakehouse-playground,
+ *   /request-demo) sit on a warm off-white. Never pure #fff — a hair of warmth reads as
+ *   considered rather than default, and reduces the glare of large text areas.
+ *
+ *   Operator surfaces (/app, /fde, /admin) sit on deep graphite. Dense technical
+ *   information is easier to scan on a dark ground, and it marks the boundary between
+ *   "being sold to" and "doing work" without a word of explanation.
+ *
+ * One accent — emerald — used sparingly: one primary action per view. Confidence and
+ * status get their own restrained scale so a score never reads as decoration.
+ * ===================================================================================
+ */
+
+@theme {
+  /* --- Neutrals: warm, public ------------------------------------------------- */
+  --color-surface: oklch(99% 0.004 85);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-surface-sunken: oklch(97.2% 0.005 85);
+  --color-surface-inset: oklch(95.4% 0.006 85);
+
+  /* --- Neutrals: graphite, operator ------------------------------------------ */
+  --color-graphite-950: oklch(16.5% 0.009 265);
+  --color-graphite-900: oklch(20.5% 0.011 265);
+  --color-graphite-850: oklch(24% 0.012 265);
+  --color-graphite-800: oklch(28% 0.013 265);
+  --color-graphite-700: oklch(36% 0.014 265);
+  --color-graphite-600: oklch(46% 0.014 265);
+  --color-graphite-500: oklch(57% 0.013 265);
+  --color-graphite-400: oklch(68% 0.011 265);
+  --color-graphite-300: oklch(79% 0.008 265);
+  --color-graphite-200: oklch(88% 0.006 265);
+  --color-graphite-100: oklch(94% 0.004 265);
+
+  /* --- Text ------------------------------------------------------------------- */
+  --color-ink: oklch(21% 0.012 265);
+  --color-ink-muted: oklch(44% 0.012 265);
+  --color-ink-subtle: oklch(58% 0.011 265);
+  --color-ink-inverse: oklch(97% 0.003 85);
+  --color-ink-inverse-muted: oklch(76% 0.008 265);
+  --color-ink-inverse-subtle: oklch(62% 0.010 265);
+
+  /* --- Accent: emerald -------------------------------------------------------- */
+  --color-accent-50: oklch(97.5% 0.018 162);
+  --color-accent-100: oklch(94.5% 0.040 162);
+  --color-accent-200: oklch(89% 0.072 162);
+  --color-accent-300: oklch(81% 0.105 162);
+  --color-accent-400: oklch(72% 0.128 162);
+  --color-accent-500: oklch(63.5% 0.132 162);
+  --color-accent-600: oklch(54.5% 0.116 162);
+  --color-accent-700: oklch(45% 0.094 162);
+  --color-accent-800: oklch(37% 0.074 162);
+  --color-accent-900: oklch(29% 0.056 162);
+
+  /* --- Semantic status -------------------------------------------------------- */
+  --color-positive: oklch(58% 0.124 150);
+  --color-positive-soft: oklch(95% 0.035 150);
+  --color-caution: oklch(68% 0.132 72);
+  --color-caution-soft: oklch(96% 0.042 80);
+  --color-critical: oklch(56% 0.168 24);
+  --color-critical-soft: oklch(95.5% 0.028 24);
+  --color-info: oklch(58% 0.098 240);
+  --color-info-soft: oklch(95.5% 0.028 240);
+
+  /*
+   * Trust states. These exist as tokens rather than ad-hoc classes because the
+   * distinction between verified knowledge and an unreviewed draft has to look the same
+   * on every screen. A draft styled like an approved playbook is the failure this
+   * product is built to avoid.
+   */
+  --color-verified: oklch(58% 0.124 150);
+  --color-verified-soft: oklch(95% 0.035 150);
+  --color-unverified: oklch(68% 0.132 72);
+  --color-unverified-soft: oklch(96% 0.042 80);
+  --color-gated: oklch(52% 0.010 265);
+  --color-gated-soft: oklch(94% 0.005 265);
+  --color-simulated: oklch(60% 0.095 300);
+  --color-simulated-soft: oklch(96% 0.028 300);
+
+  /* --- Charts ------------------------------------------------------------------
+   * A six-slot categorical palette, assigned in this fixed order and never cycled.
+   * Both the light and dark sets were checked with the dataviz validator and pass
+   * all six checks: OKLCH lightness band, chroma floor, protan/deutan separation
+   * (worst adjacent pair ΔE 12.3 light / 12.4 dark), the normal-vision floor
+   * (16.3 / 16.6) and ≥3:1 contrast against the chart surface.
+   *
+   * Slot 1 is the brand teal so a single-series chart reads as COMPASS. The order
+   * is the colour-blindness safety mechanism — do not reorder these without
+   * re-running the validator, and do not add a seventh by inventing a hue.
+   * -------------------------------------------------------------------------- */
+  --color-chart-1: #0f9268;
+  --color-chart-2: #2a78d6;
+  --color-chart-3: #b87400;
+  --color-chart-4: #c2567f;
+  --color-chart-5: #6250d6;
+  --color-chart-6: #c4461c;
+
+  /* Sequential / ordinal: one hue, light → dark, for magnitude and ordered stages.
+   * The range is compressed rather than running to the top of the ramp: every step,
+   * including the lightest, clears 2:1 against the chart surface (2.09 → 7.58), so a
+   * funnel's entry stage is a visible bar and not a ghost. */
+  --color-chart-seq-1: oklch(75.5% 0.110 162);
+  --color-chart-seq-2: oklch(67.5% 0.126 162);
+  --color-chart-seq-3: oklch(59.5% 0.126 162);
+  --color-chart-seq-4: oklch(51.5% 0.110 162);
+  --color-chart-seq-5: oklch(43.5% 0.090 162);
+
+  /* Chart furniture: recessive by design. */
+  --color-chart-grid: oklch(92% 0.004 85);
+  --color-chart-axis: oklch(58% 0.011 265);
+  --color-chart-surface: oklch(100% 0 0);
+
+  /* --- Borders: hairlines ----------------------------------------------------- */
+  --color-border: oklch(90.5% 0.005 85);
+  --color-border-strong: oklch(84% 0.007 85);
+  --color-border-inverse: oklch(31% 0.012 265);
+  --color-border-inverse-strong: oklch(40% 0.013 265);
+
+  /* --- Typography ------------------------------------------------------------- */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-mono-stack), ui-monospace, "SF Mono", "JetBrains Mono",
+    "Fira Code", Menlo, Consolas, monospace;
+
+  /* A tight display scale. Headings are confident, not shouty. */
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.028em;
+  --text-display--font-weight: 600;
+
+  --text-h1: 2.25rem;
+  --text-h1--line-height: 1.12;
+  --text-h1--letter-spacing: -0.022em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: 1.625rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.016em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.1875rem;
+  --text-h3--line-height: 1.32;
+  --text-h3--letter-spacing: -0.011em;
+  --text-h3--font-weight: 600;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.62;
+
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.55;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.45;
+  --text-micro--letter-spacing: 0.055em;
+  --text-micro--font-weight: 600;
+
+  /* --- Radii: restrained ------------------------------------------------------ */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 22px;
+
+  /*
+   * Shadows built from layered low-opacity neutrals rather than a single blur. A real
+   * object casts a tight contact shadow plus a soft ambient one; one 20px blur reads as
+   * a sticker.
+   */
+  --shadow-subtle: 0 1px 2px -1px oklch(21% 0.012 265 / 0.08),
+    0 1px 1px oklch(21% 0.012 265 / 0.04);
+  --shadow-raised: 0 1px 2px -1px oklch(21% 0.012 265 / 0.07),
+    0 4px 10px -3px oklch(21% 0.012 265 / 0.08);
+  --shadow-float: 0 1px 2px -1px oklch(21% 0.012 265 / 0.06),
+    0 10px 26px -8px oklch(21% 0.012 265 / 0.14);
+  --shadow-inverse: 0 1px 2px oklch(10% 0.01 265 / 0.4),
+    0 10px 28px -10px oklch(10% 0.01 265 / 0.5);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/*
+ * ===================================================================================
+ * Dark mode
+ *
+ * Follows the system preference, overridable with data-theme. The public pages invert
+ * to graphite; the operator surfaces are already dark and barely change, which is the
+ * point — someone who works in /fde all day sees one consistent environment.
+ * ===================================================================================
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: oklch(17.5% 0.010 265);
+    --color-surface-raised: oklch(21% 0.011 265);
+    --color-surface-sunken: oklch(14.5% 0.009 265);
+    --color-surface-inset: oklch(24.5% 0.012 265);
+
+    --color-ink: oklch(96% 0.003 85);
+    --color-ink-muted: oklch(74% 0.009 265);
+    --color-ink-subtle: oklch(60% 0.011 265);
+    --color-ink-inverse: oklch(21% 0.012 265);
+    --color-ink-inverse-muted: oklch(44% 0.012 265);
+    --color-ink-inverse-subtle: oklch(58% 0.011 265);
+
+    --color-border: oklch(29% 0.011 265);
+    --color-border-strong: oklch(37% 0.013 265);
+    --color-border-inverse: oklch(88% 0.006 85);
+    --color-border-inverse-strong: oklch(80% 0.007 85);
+
+    /* Soft status fills need to be dark-ground tints, not pale washes. */
+    --color-positive-soft: oklch(27% 0.045 150);
+    --color-caution-soft: oklch(28% 0.050 72);
+    --color-critical-soft: oklch(27% 0.055 24);
+    --color-info-soft: oklch(26% 0.040 240);
+    --color-verified-soft: oklch(27% 0.045 150);
+    --color-unverified-soft: oklch(28% 0.050 72);
+    --color-gated-soft: oklch(25% 0.008 265);
+    --color-simulated-soft: oklch(27% 0.040 300);
+
+    --color-accent-50: oklch(26% 0.040 162);
+    --color-accent-100: oklch(31% 0.056 162);
+    --color-accent-200: oklch(38% 0.078 162);
+
+
+    /* Charts: a separately chosen dark set, not a flip of the light one. */
+    --color-chart-1: #23ab7e;
+    --color-chart-2: #5293e6;
+    --color-chart-3: #bb871b;
+    --color-chart-4: #d4699a;
+    --color-chart-5: #8a79e8;
+    --color-chart-6: #da6a42;
+
+    /* Dark: the ramp runs the other way, and again every step clears 2:1 (2.65 → 7.65). */
+    --color-chart-seq-1: oklch(52.5% 0.112 162);
+    --color-chart-seq-2: oklch(59.5% 0.126 162);
+    --color-chart-seq-3: oklch(66.5% 0.130 162);
+    --color-chart-seq-4: oklch(73.5% 0.120 162);
+    --color-chart-seq-5: oklch(80.5% 0.100 162);
+
+    --color-chart-grid: oklch(28% 0.011 265);
+    --color-chart-axis: oklch(60% 0.011 265);
+    --color-chart-surface: oklch(21% 0.011 265);
+    --shadow-subtle: 0 1px 2px oklch(8% 0.01 265 / 0.5);
+    --shadow-raised: 0 2px 6px -1px oklch(8% 0.01 265 / 0.55);
+    --shadow-float: 0 12px 32px -10px oklch(8% 0.01 265 / 0.7);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-surface: oklch(17.5% 0.010 265);
+  --color-surface-raised: oklch(21% 0.011 265);
+  --color-surface-sunken: oklch(14.5% 0.009 265);
+  --color-surface-inset: oklch(24.5% 0.012 265);
+
+  --color-ink: oklch(96% 0.003 85);
+  --color-ink-muted: oklch(74% 0.009 265);
+  --color-ink-subtle: oklch(60% 0.011 265);
+  --color-ink-inverse: oklch(21% 0.012 265);
+  --color-ink-inverse-muted: oklch(44% 0.012 265);
+
+  --color-border: oklch(29% 0.011 265);
+  --color-border-strong: oklch(37% 0.013 265);
+
+  --color-positive-soft: oklch(27% 0.045 150);
+  --color-caution-soft: oklch(28% 0.050 72);
+  --color-critical-soft: oklch(27% 0.055 24);
+  --color-info-soft: oklch(26% 0.040 240);
+  --color-verified-soft: oklch(27% 0.045 150);
+  --color-unverified-soft: oklch(28% 0.050 72);
+  --color-gated-soft: oklch(25% 0.008 265);
+  --color-simulated-soft: oklch(27% 0.040 300);
+
+  --color-accent-50: oklch(26% 0.040 162);
+  --color-accent-100: oklch(31% 0.056 162);
+  --color-accent-200: oklch(38% 0.078 162);
+
+  /* Charts: a separately chosen dark set, not a flip of the light one. */
+  --color-chart-1: #23ab7e;
+  --color-chart-2: #5293e6;
+  --color-chart-3: #bb871b;
+  --color-chart-4: #d4699a;
+  --color-chart-5: #8a79e8;
+  --color-chart-6: #da6a42;
+
+  /* Dark: the ramp runs the other way, and again every step clears 2:1 (2.65 → 7.65). */
+  --color-chart-seq-1: oklch(52.5% 0.112 162);
+  --color-chart-seq-2: oklch(59.5% 0.126 162);
+  --color-chart-seq-3: oklch(66.5% 0.130 162);
+  --color-chart-seq-4: oklch(73.5% 0.120 162);
+  --color-chart-seq-5: oklch(80.5% 0.100 162);
+
+  --color-chart-grid: oklch(28% 0.011 265);
+  --color-chart-axis: oklch(60% 0.011 265);
+  --color-chart-surface: oklch(21% 0.011 265);
+}
+
+/*
+ * ===================================================================================
+ * Base layer
+ * ===================================================================================
+ */
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Offset for the sticky header when jumping to an anchor. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv05" 1, "cv11" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /*
+   * Tabular figures everywhere numbers are compared. Proportional digits make a column
+   * of scores jitter, which makes a table harder to scan than it needs to be.
+   */
+  table,
+  [data-numeric],
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /*
+   * One visible focus treatment, applied once. `:focus-visible` rather than `:focus` so
+   * a mouse click does not leave a ring behind, while keyboard users always get one.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Never remove a focus ring without replacing it. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-200);
+    color: var(--color-accent-900);
+  }
+
+  /* Firefox needs the scrollbar colours declared; WebKit uses the rules below. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-strong);
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-ink-subtle);
+  }
+}
+
+/*
+ * ===================================================================================
+ * Utilities
+ * ===================================================================================
+ */
+
+@layer utilities {
+  /* Skip link: visually hidden until focused. */
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    border-radius: var(--radius-md);
+    background-color: var(--color-graphite-900);
+    color: var(--color-ink-inverse);
+    padding: 0.625rem 1rem;
+    font-size: var(--text-small);
+    font-weight: 500;
+    transition: top 150ms var(--ease-out-quint);
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /*
+   * A hairline that stays a hairline. A 1px border at a device pixel ratio above 1 is
+   * heavier than intended, so these use a shadow at fractional width.
+   */
+  .hairline {
+    box-shadow: inset 0 0 0 0.5px var(--color-border);
+  }
+
+  .hairline-t {
+    box-shadow: inset 0 0.5px 0 0 var(--color-border);
+  }
+
+  .hairline-b {
+    box-shadow: inset 0 -0.5px 0 0 var(--color-border);
+  }
+
+  /* Dot grid for hero and diagram backgrounds. Subtle enough to read as texture. */
+  .dot-grid {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--color-border-strong) 1px,
+      transparent 0
+    );
+    background-size: 22px 22px;
+  }
+
+  .dot-grid-fade {
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  }
+
+  /*
+   * A measure cap for long-form prose. Lines longer than about 75 characters are
+   * measurably harder to read, and the explainer pages are the ones people actually read.
+   */
+  .measure {
+    max-width: 68ch;
+  }
+
+  .measure-tight {
+    max-width: 54ch;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Fades a scrollable region's edge so a cut-off table reads as scrollable. */
+  .scroll-fade-r {
+    mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent 100%);
+  }
+
+  @keyframes compass-shimmer {
+    from {
+      background-position: -180% 0;
+    }
+    to {
+      background-position: 180% 0;
+    }
+  }
+
+  .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      var(--color-surface-inset) 0%,
+      var(--color-surface-sunken) 45%,
+      var(--color-surface-inset) 90%
+    );
+    background-size: 220% 100%;
+    animation: compass-shimmer 1.6s linear infinite;
+  }
+}
+
+/*
+ * ===================================================================================
+ * Reduced motion
+ *
+ * A single global override. Animation in COMPASS explains things — a step advancing, a
+ * node connecting — so it is reduced to near-instant rather than removed, which keeps
+ * state changes perceptible without movement.
+ * ===================================================================================
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .skeleton {
+    animation: none;
+    background-image: none;
+    background-color: var(--color-surface-inset);
+  }
+}
+
+/*
+ * ===================================================================================
+ * React Flow
+ *
+ * The architecture playground. Overridden to use our tokens rather than the library's
+ * default palette, which would otherwise be the one place the product looks generic.
+ * ===================================================================================
+ */
+
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-edge-stroke: var(--color-border-strong);
+  --xy-edge-stroke-selected: var(--color-accent-500);
+  --xy-handle-background-color: var(--color-accent-500);
+  --xy-handle-border-color: var(--color-surface-raised);
+  --xy-attribution-background-color: transparent;
+}
+
+.react-flow__attribution {
+  font-size: 10px;
+  color: var(--color-ink-subtle);
+  background: transparent !important;
+}
+
+.react-flow__controls {
+  box-shadow: var(--shadow-raised);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.react-flow__controls-button {
+  background-color: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-ink-muted);
+  width: 28px;
+  height: 28px;
+}
+
+.react-flow__controls-button:hover {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink);
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor;
+  max-width: 13px;
+  max-height: 13px;
+}
+
+.react-flow__minimap {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+/* An edge marked conceptual is dashed, so a proposal never looks like a documented fact. */
+.react-flow__edge.edge-conceptual .react-flow__edge-path,
+.react-flow__edge.edge-needs_confirmation .react-flow__edge-path {
+  stroke-dasharray: 5 4;
+}
+
+.react-flow__edge.edge-needs_confirmation .react-flow__edge-path {
+  stroke: var(--color-caution);
+}
+
+.react-flow__edge-text {
+  font-size: 10px;
+  fill: var(--color-ink-subtle);
+}
